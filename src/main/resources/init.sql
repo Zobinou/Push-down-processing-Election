@@ -62,7 +62,7 @@ SELECT COUNT(*) AS total_votes FROM vote;
 SELECT vote_type::TEXT, COUNT(*) AS count
 FROM vote
 GROUP BY vote_type
-ORDER BY vote_type;
+ORDER BY count Desc;
 
 -- Q3
 SELECT c.name AS candidate_name,
