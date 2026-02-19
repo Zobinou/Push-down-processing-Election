@@ -5,21 +5,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Repository that delegates all computations to PostgreSQL (push-down processing).
- * No post-processing is performed in Java – the database returns the final aggregated results.
- */
+
 public class ElectionRepository {
 
-    // -------------------------------------------------------------------------
-    // Q1 – Total number of votes
-    // -------------------------------------------------------------------------
 
-    /**
-     * Counts the total number of votes stored in the database.
-     *
-     * @return total vote count
-     */
+    // Q1 – Total number of votes
+
     public long countAllVotes() {
         String sql = "SELECT COUNT(*) AS total_votes FROM vote";
 
@@ -36,16 +27,9 @@ public class ElectionRepository {
         return 0;
     }
 
-    // -------------------------------------------------------------------------
-    // Q2 – Number of votes per type
-    // -------------------------------------------------------------------------
 
-    /**
-     * Returns the number of votes for each vote type (VALID, BLANK, NULL).
-     * The database groups and counts directly.
-     *
-     * @return list of {@link VoteTypeCount}
-     */
+    // Q2 – Number of votes per type
+
     public List<VoteTypeCount> countVotesByType() {
         String sql = """
                 SELECT vote_type::TEXT AS vote_type,
@@ -72,16 +56,9 @@ public class ElectionRepository {
         return results;
     }
 
-    // -------------------------------------------------------------------------
-    // Q3 – Number of valid votes per candidate
-    // -------------------------------------------------------------------------
 
-    /**
-     * Returns the number of valid votes received by each candidate.
-     * Candidates with zero valid votes are also included via LEFT JOIN.
-     *
-     * @return list of {@link CandidateVoteCount}
-     */
+    // Q3 – Number of valid votes per candidate
+
     public List<CandidateVoteCount> countValidVotesByCandidate() {
         String sql = """
                 SELECT c.name                                        AS candidate_name,
@@ -109,16 +86,9 @@ public class ElectionRepository {
         return results;
     }
 
-    // -------------------------------------------------------------------------
-    // Q4 – Global vote summary (single row)
-    // -------------------------------------------------------------------------
 
-    /**
-     * Returns a global summary: valid, blank, and null vote counts in a single query row.
-     * Uses conditional aggregation (CASE WHEN / FILTER) – no post-processing in Java.
-     *
-     * @return {@link VoteSummary}
-     */
+    // Q4 – Global vote summary (single row)
+
     public VoteSummary computeVoteSummary() {
         String sql = """
                 SELECT COUNT(*) FILTER (WHERE vote_type = 'VALID') AS valid_count,
@@ -143,16 +113,10 @@ public class ElectionRepository {
         return new VoteSummary(0, 0, 0);
     }
 
-    // -------------------------------------------------------------------------
-    // Q5 – Turnout rate
-    // -------------------------------------------------------------------------
 
-    /**
-     * Computes the turnout rate: (number of voters who voted) / (total number of voters).
-     * The division is performed inside PostgreSQL.
-     *
-     * @return turnout rate as a value between 0.0 and 1.0
-     */
+    // Q5 – Turnout rate
+
+
     public double computeTurnoutRate() {
         String sql = """
                 SELECT COUNT(DISTINCT v.voter_id)::FLOAT
@@ -173,16 +137,11 @@ public class ElectionRepository {
         return 0.0;
     }
 
-    // -------------------------------------------------------------------------
-    // Q6 – Election winner
-    // -------------------------------------------------------------------------
 
-    /**
-     * Finds the candidate with the highest number of valid votes.
-     * In case of a tie, the candidate who appears first alphabetically is returned.
-     *
-     * @return {@link ElectionResult} containing the winner's name and vote count
-     */
+    // Q6 – Election winner
+
+
+
     public ElectionResult findWinner() {
         String sql = """
                 SELECT c.name    AS candidate_name,
@@ -206,6 +165,6 @@ public class ElectionRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Error while finding election winner", e);
         }
-        return null; // No winner (no valid votes)
+        return null;
     }
 }

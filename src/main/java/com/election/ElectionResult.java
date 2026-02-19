@@ -1,8 +1,6 @@
 package com.election;
 
-/**
- * Represents the result of the election with the winning candidate.
- */
+
 public record ElectionResult(String candidateName, long validVoteCount) {
 
     @Override
