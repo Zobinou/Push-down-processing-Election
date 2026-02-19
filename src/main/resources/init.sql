@@ -1,15 +1,5 @@
 
--- ============================================================
---  Election Database – Schema & Seed Data
--- ============================================================
 
--- Drop existing objects (clean slate)
-DROP TABLE IF EXISTS vote     CASCADE;
-DROP TABLE IF EXISTS voter    CASCADE;
-DROP TABLE IF EXISTS candidate CASCADE;
-DROP TYPE  IF EXISTS vote_type;
-
--- ── Tables ──────────────────────────────────────────────────
 
 CREATE TABLE candidate (
                            id   SERIAL PRIMARY KEY,
@@ -30,7 +20,6 @@ CREATE TABLE vote (
                       vote_type    vote_type NOT NULL
 );
 
--- ── Seed data ────────────────────────────────────────────────
 
 INSERT INTO candidate (name) VALUES
                                  ('Alice'),
@@ -46,14 +35,14 @@ INSERT INTO voter (name) VALUES
                              ('Voter6');
 
 INSERT INTO vote (candidate_id, voter_id, vote_type) VALUES
-                                                         (1, 1, 'VALID'),   -- Alice  ← Voter1
-                                                         (1, 2, 'VALID'),   -- Alice  ← Voter2
-                                                         (2, 3, 'VALID'),   -- Bob    ← Voter3
-                                                         (2, 4, 'BLANK'),   -- Blank  ← Voter4
-                                                         (NULL, 5, 'BLANK'),-- Blank  ← Voter5
-                                                         (3, 6, 'NULL');    -- Null   ← Voter6
+  (1, 1, 'VALID'),   -- Alice  ← Voter1
+  (1, 2, 'VALID'),   -- Alice  ← Voter2
+  (2, 3, 'VALID'),   -- Bob    ← Voter3
+  (2, 4, 'BLANK'),   -- Blank  ← Voter4
+  (NULL, 5, 'BLANK'),-- Blank  ← Voter5
+  (3, 6, 'NULL');    -- Null   ← Voter6
 
--- ── Quick verification ───────────────────────────────────────
+--Verifications de la base de donnee
 
 -- Q1
 SELECT COUNT(*) AS total_votes FROM vote;
